@@ -26,8 +26,11 @@ INCLUDE	:= include
 # define lib directory
 LIB		:= lib
 
+# define app name
+APPNAME	:= game_of_life
+
 ifeq ($(OS),Windows_NT)
-MAIN	:= main.exe
+MAIN	:= $(APPNAME).exe
 SOURCEDIRS	:= $(SRC)
 INCLUDEDIRS	:= $(INCLUDE)
 LIBDIRS		:= $(LIB)
@@ -35,7 +38,7 @@ FIXPATH = $(subst /,\,$1)
 RM			:= del /q /f
 MD	:= mkdir
 else
-MAIN	:= main
+MAIN	:= $(APPNAME)
 SOURCEDIRS	:= $(shell find $(SRC) -type d)
 INCLUDEDIRS	:= $(shell find $(INCLUDE) -type d)
 LIBDIRS		:= $(shell find $(LIB) -type d)
