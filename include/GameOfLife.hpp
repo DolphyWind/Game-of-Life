@@ -10,8 +10,9 @@ private:
     /* Window defaults */
     const sf::VideoMode m_defaultWindowSize = {1280, 720};
     const std::string m_windowTitle = "Game of Life";
-
-    /* Frames */
+    const sf::Color m_clearColor = sf::Color::White;
+    
+    /* Game tick */
     const std::uint32_t m_FPS = 60;
     const sf::Time m_timePerFrame = sf::seconds( 1.f / float(m_FPS) );
     sf::Clock m_frameClock;

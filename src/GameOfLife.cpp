@@ -1,10 +1,12 @@
 #include "GameOfLife.hpp"
 
+/* Initializes game */
 GameOfLife::GameOfLife()
 {
     m_window.create(m_defaultWindowSize, m_windowTitle);
 }
 
+/* Main game logic */
 void GameOfLife::mainLoop()
 {
     m_frameClock.restart();
@@ -26,13 +28,15 @@ void GameOfLife::mainLoop()
     }
 }
 
+/* Renders in-game elements */
 void GameOfLife::render()
 {
-    m_window.clear();
+    m_window.clear(m_clearColor);
 
     m_window.display();
 }
 
+/* Handles sfml events of window */
 void GameOfLife::handleEvents()
 {
     sf::Event e;
@@ -43,6 +47,7 @@ void GameOfLife::handleEvents()
     }
 }
 
+/* Updates in-game elements */
 void GameOfLife::update(sf::Time deltaTime)
 {
     
