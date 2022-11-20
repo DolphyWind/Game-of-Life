@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <array>
+#include <cmath>
 
 class GameOfLife
 {
@@ -13,7 +13,7 @@ private:
     const std::string m_windowTitle = "Game of Life";
     const sf::Color m_clearColor = sf::Color::White;
     sf::Vector2u m_windowSize;
-    sf::Vector2f m_gridSize = {100, 100};
+    float m_gridSize = 50.f;
     sf::View m_camera;
     
     /* Game tick */
@@ -28,8 +28,11 @@ private:
     /* Movement & clicking with mouse */
     bool m_isLeftDown = false;
     sf::Vector2i m_firstClickPosition;
+    sf::Vector2f m_firstClickPixel;
     bool m_hasMovedMouse = false;
     sf::Vector2f m_firstCamCenter;
+    const float m_zoomIntensity = .1f;
+    float m_scale = 1;
 
     void update(sf::Time deltaTime);
     void render();
@@ -37,6 +40,7 @@ private:
     void updateCamera(std::uint32_t width = 0, std::uint32_t height = 0);
     void handleMouseInputs();
     bool mouseBoundaryCheck(sf::Vector2i ms);
+    void updateGridsize(int delta);
 
 public:
     GameOfLife();

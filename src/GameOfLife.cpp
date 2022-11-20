@@ -47,6 +47,8 @@ void GameOfLife::handleEvents()
             m_window.close();
         else if(e.type == sf::Event::Resized)
             updateCamera(e.size.width, e.size.height);
+        else if(e.type == sf::Event::MouseWheelMoved && m_window.hasFocus())
+            updateGridsize(e.mouseWheel.delta);
     }
 }
 
@@ -67,22 +69,25 @@ void GameOfLife::render()
     m_window.clear(m_clearColor);
 
     /* Drawing the lines */
-    float startX = int(m_horizontalPoints[0].position.x / m_gridSize.x) * m_gridSize.x;
-    float startY = int(m_verticalPoints[0].position.y / m_gridSize.y) * m_gridSize.y;
+    float startX = int(m_horizontalPoints[0].position.x / m_gridSize) * m_gridSize;
+    float startY = int(m_verticalPoints[0].position.y / m_gridSize) * m_gridSize;
 
-    for(int x = startX; x < m_horizontalPoints[1].position.x; x += m_gridSize.x)
+    for(int x = startX; x < m_horizontalPoints[1].position.x; x += m_gridSize)
     {
         m_verticalPoints[0].position.x = x;
         m_verticalPoints[1].position.x = x;
         m_window.draw(m_verticalPoints, 2, sf::Lines);
     }
 
-    for(int y = startY; y < m_verticalPoints[1].position.y; y += m_gridSize.y)
+    for(int y = startY; y < m_verticalPoints[1].position.y; y += m_gridSize)
     {
         m_horizontalPoints[0].position.y = y;
         m_horizontalPoints[1].position.y = y;
         m_window.draw(m_horizontalPoints, 2, sf::Lines);
     }
+    sf::RectangleShape shape({m_gridSize, m_gridSize});
+    shape.setFillColor(sf::Color::Black);
+    m_window.draw(shape);
 
     m_window.display();
 }
@@ -116,6 +121,7 @@ void GameOfLife::handleMouseInputs()
         else if(mouseBoundaryCheck(m_firstClickPosition))
         {
             sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
+
             if(mousePos != m_firstClickPosition && !m_hasMovedMouse)
             {
                 m_hasMovedMouse = true;
@@ -124,7 +130,10 @@ void GameOfLife::handleMouseInputs()
             
             if(m_hasMovedMouse)
             {
-                sf::Vector2i delta = {m_firstClickPosition.x - mousePos.x, m_firstClickPosition.y - mousePos.y};
+                sf::Vector2f delta = {m_firstClickPosition.x - mousePos.x, m_firstClickPosition.y - mousePos.y};
+                delta.x *= m_scale;
+                delta.y *= m_scale;
+
                 m_camera.setCenter(m_firstCamCenter.x + delta.x, m_firstCamCenter.y + delta.y);
                 updateCamera();
             }
@@ -148,4 +157,16 @@ void GameOfLife::handleMouseInputs()
 bool GameOfLife::mouseBoundaryCheck(sf::Vector2i ms)
 {
     return (ms.x >= 0 && ms.x <= m_window.getSize().x && ms.y >= 0 && ms.y <= m_window.getSize().y);
+}
+
+/* Updates gridsize when zoomed */
+void GameOfLife::updateGridsize(int delta)
+{
+    float zoom = 1 / std::exp(delta * m_zoomIntensity);
+    if(m_scale * zoom > 5.f) return;
+    else if(m_scale * zoom < 0.3f) return;
+    
+    m_camera.zoom(zoom);
+    updateCamera();
+    m_scale *= zoom;
 }
