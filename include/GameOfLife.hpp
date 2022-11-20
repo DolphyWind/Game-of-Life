@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp> // Tgui 0.9
 #include <iostream>
 #include <cmath>
 
@@ -11,7 +12,8 @@ private:
     /* Window settings */
     const sf::VideoMode m_defaultWindowSize = {1280, 720};
     const std::string m_windowTitle = "Game of Life";
-    const sf::Color m_clearColor = sf::Color::White;
+    const sf::Color m_clearColor = sf::Color(160, 160, 160);
+    const sf::Color m_cellColor = sf::Color(146, 0, 179);
     sf::Vector2u m_windowSize;
     float m_gridSize = 50.f;
     sf::View m_camera;
@@ -34,6 +36,25 @@ private:
     const float m_zoomIntensity = .1f;
     float m_scale = 1;
 
+    /* UI */
+    tgui::GuiSFML m_gui;
+    tgui::Panel::Ptr m_panel = tgui::Panel::create();
+    tgui::Button::Ptr m_startButton = tgui::Button::create();
+    tgui::Button::Ptr m_stepButton = tgui::Button::create();
+    tgui::Slider::Ptr m_speedSlider = tgui::Slider::create();
+    tgui::Label::Ptr m_speedLabel = tgui::Label::create();
+    const float m_minSliderSpeed = 1.f; // 1 step per second
+    const float m_maxSliderSpeed = 20.f; // 20 steps per second
+    const sf::Color m_defaultPanelColor = sf::Color(7, 0, 143);
+    const sf::Color m_defaultLabelColor = sf::Color(28, 189, 0);
+    const sf::Color m_defaultButtonColor = sf::Color(0, 153, 209);
+    const sf::Color m_defaultButtonHoverColor = sf::Color(0, 122, 166);
+    const sf::Color m_defaultButtonDownColor = sf::Color(0, 103, 140);
+    const sf::Color m_defaultSliderColor = sf::Color(250, 233, 42);
+    const sf::Color m_defaultSliderHoverColor = sf::Color(230, 213, 37);
+    const std::uint32_t m_defaultButtonTextSize = 26;
+    const std::uint32_t m_defaultLabelTextSize = 26;
+
     void update(sf::Time deltaTime);
     void render();
     void handleEvents();
@@ -41,6 +62,7 @@ private:
     void handleMouseInputs();
     bool mouseBoundaryCheck(sf::Vector2i ms);
     void updateGridsize(int delta);
+    void updateSpeedLabel();
 
 public:
     GameOfLife();

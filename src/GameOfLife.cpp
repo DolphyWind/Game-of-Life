@@ -8,6 +8,63 @@ GameOfLife::GameOfLife()
     m_window.create(m_defaultWindowSize, m_windowTitle);
     m_window.setFramerateLimit(m_FPS);
     updateCamera(m_defaultWindowSize.width, m_defaultWindowSize.height);
+    m_gui.setTarget(m_window);
+
+    m_panel->setSize("100%", m_windowSize.y / 5);
+    m_panel->setPosition("0%", "parent.height - height");
+    m_panel->getRenderer()->setBackgroundColor(m_defaultPanelColor);
+    m_panel->getRenderer()->setBorders(tgui::Borders(3));
+
+    m_startButton->setText("Start");
+    m_startButton->setTextSize(m_defaultButtonTextSize);
+    m_startButton->setSize("20%", "50%");
+    m_startButton->setOrigin(.5f, .5f);
+    m_startButton->setPosition("50%", "50%");
+    m_startButton->getRenderer()->setBackgroundColor(m_defaultButtonColor);
+    m_startButton->getRenderer()->setTextColor(sf::Color::Black);
+    m_startButton->getRenderer()->setBackgroundColorHover(m_defaultButtonHoverColor);
+    m_startButton->getRenderer()->setBackgroundColorDown(m_defaultButtonDownColor);
+
+    m_stepButton->setText("Next Step");
+    m_stepButton->setTextSize(m_defaultButtonTextSize);
+    m_stepButton->setSize("20%", "50%");
+    m_stepButton->setOrigin(.5f, .5f);
+    m_stepButton->setPosition("20%", "50%");
+    m_stepButton->getRenderer()->setBackgroundColor(m_defaultButtonColor);
+    m_stepButton->getRenderer()->setTextColor(sf::Color::Black);
+    m_stepButton->getRenderer()->setBackgroundColorHover(m_defaultButtonHoverColor);
+    m_stepButton->getRenderer()->setBackgroundColorDown(m_defaultButtonDownColor);
+
+    m_speedSlider->setMinimum(m_minSliderSpeed);
+    m_speedSlider->setMaximum(m_maxSliderSpeed);
+    m_speedSlider->setWidth("20%");
+    m_speedSlider->setOrigin(.5f, .5f);
+    m_speedSlider->setPosition("80%", "60%");
+    m_speedSlider->getRenderer()->setThumbColor(m_defaultSliderColor);
+    m_speedSlider->getRenderer()->setThumbColorHover(m_defaultSliderHoverColor);
+    m_speedSlider->getRenderer()->setTrackColor(m_defaultSliderColor);
+    m_speedSlider->getRenderer()->setTrackColorHover(m_defaultSliderHoverColor);
+    m_speedSlider->getRenderer()->setBorderColor(sf::Color::Black);
+    m_speedSlider->getRenderer()->setBorderColorHover(sf::Color::Black);
+    m_speedSlider->onValueChange(&GameOfLife::updateSpeedLabel, this);
+
+    m_speedLabel->setTextSize(m_defaultLabelTextSize);
+    m_speedLabel->setText("Speed: 1x");
+    m_speedLabel->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
+    m_speedLabel->getRenderer()->setTextColor(m_defaultLabelColor);
+    m_speedLabel->setWidth("20%");
+    m_speedLabel->setOrigin(.5f, .5f);
+    m_speedLabel->setPosition("80%", "30%");
+    m_speedLabel->getRenderer()->setTextOutlineThickness(2);
+    m_speedLabel->getRenderer()->setTextOutlineColor(sf::Color::Black);
+
+    m_panel->add(m_startButton);
+    m_panel->add(m_stepButton);
+    m_panel->add(m_speedSlider);
+    m_panel->add(m_speedLabel);
+
+    m_gui.add(m_panel);
+
 
     m_verticalPoints[0].color = sf::Color::Black;
     m_verticalPoints[1].color = sf::Color::Black;
@@ -43,6 +100,8 @@ void GameOfLife::handleEvents()
     sf::Event e;
     while(m_window.pollEvent(e))
     {
+        m_gui.handleEvent(e);
+
         if(e.type == sf::Event::Closed)
             m_window.close();
         else if(e.type == sf::Event::Resized)
@@ -85,9 +144,8 @@ void GameOfLife::render()
         m_horizontalPoints[1].position.y = y;
         m_window.draw(m_horizontalPoints, 2, sf::Lines);
     }
-    sf::RectangleShape shape({m_gridSize, m_gridSize});
-    shape.setFillColor(sf::Color::Black);
-    m_window.draw(shape);
+
+    m_gui.draw();
 
     m_window.display();
 }
@@ -156,7 +214,7 @@ void GameOfLife::handleMouseInputs()
 /* Checks if given position is inside of the boundary of our window */
 bool GameOfLife::mouseBoundaryCheck(sf::Vector2i ms)
 {
-    return (ms.x >= 0 && ms.x <= m_window.getSize().x && ms.y >= 0 && ms.y <= m_window.getSize().y);
+    return (ms.x >= 0 && ms.x <= m_window.getSize().x && ms.y >= 0 && ms.y <= m_panel->getPosition().y);
 }
 
 /* Updates gridsize when zoomed */
@@ -169,4 +227,10 @@ void GameOfLife::updateGridsize(int delta)
     m_camera.zoom(zoom);
     updateCamera();
     m_scale *= zoom;
+}
+
+void GameOfLife::updateSpeedLabel()
+{
+    std::string sliderValueStr = std::to_string(int(m_speedSlider->getValue()));
+    m_speedLabel->setText("Speed: " + sliderValueStr + "x");
 }
