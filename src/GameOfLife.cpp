@@ -1,4 +1,4 @@
-#include "GameOfLife.hpp"ü
+#include "GameOfLife.hpp"
 
 /* Initializes game */
 GameOfLife::GameOfLife()
