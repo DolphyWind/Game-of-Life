@@ -158,6 +158,10 @@ void GameOfLife::update(sf::Time deltaTime)
 
     if(m_isStarted)
     {
+        if(m_cells.empty())
+        {
+            clearBoard();
+        }
         if(m_stepClock.getElapsedTime() >= m_stepTime)
         {
             m_stepClock.restart();
@@ -373,6 +377,7 @@ void GameOfLife::clearBoard()
     m_cells.clear();
     m_currentStep = 0;
     m_stepLabel->setText("Step: 0");
+    m_previousStates.clear();
     if(m_isStarted)
     {
         m_isStarted = false;
