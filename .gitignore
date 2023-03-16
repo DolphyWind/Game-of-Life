@@ -34,3 +34,6 @@
 # output and .vscode folders
 .vscode/
 output/
+
+# Build folder
+[Bb]uild/
