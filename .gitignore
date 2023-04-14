@@ -37,3 +37,6 @@ output/
 
 # Build folder
 [Bb]uild/
+
+# Cache folder
+.cache/

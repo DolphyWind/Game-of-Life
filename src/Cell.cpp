@@ -3,7 +3,7 @@
 Cell::Cell(std::uint32_t cellSize, sf::Color cellColor)
 {
     m_cellSize = cellSize;
-    m_shape.setSize({cellSize, cellSize});
+    m_shape.setSize({static_cast<float>(cellSize), static_cast<float>(cellSize)});
     m_shape.setFillColor(cellColor);
 }
 

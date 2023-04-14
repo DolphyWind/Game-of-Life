@@ -242,7 +242,7 @@ void GameOfLife::handleMouseInputs()
             
             if(m_hasMovedMouse)
             {
-                sf::Vector2f delta = {m_firstClickPosition.x - mousePos.x, m_firstClickPosition.y - mousePos.y};
+                sf::Vector2f delta = {static_cast<float>(m_firstClickPosition.x - mousePos.x), static_cast<float>(m_firstClickPosition.y - mousePos.y)};
                 delta.x *= m_scale;
                 delta.y *= m_scale;
 
